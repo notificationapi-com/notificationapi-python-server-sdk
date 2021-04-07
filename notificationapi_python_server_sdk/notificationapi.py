@@ -1,3 +1,2 @@
-
 def init():
     return "Initialized"

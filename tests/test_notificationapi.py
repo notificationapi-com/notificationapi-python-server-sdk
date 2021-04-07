@@ -2,7 +2,6 @@
 
 """Tests for `notificationapi_python_server_sdk` package."""
 
-import pytest
 from notificationapi_python_server_sdk import notificationapi
 
 
