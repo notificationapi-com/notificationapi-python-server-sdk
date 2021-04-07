@@ -26,9 +26,6 @@ jobs:
 
             - name: Test & Coverage
               run: make coverage-ci
-
-            - name: Release
-              run: make release
     cd:
         needs: ci
         runs-on: ubuntu-latest
