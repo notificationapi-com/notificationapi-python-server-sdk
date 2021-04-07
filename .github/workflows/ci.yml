@@ -40,6 +40,7 @@ jobs:
             - name: Send Slack notification
               uses: 8398a7/action-slack@v3
               with:
+                  author_name: Python Server SDK
                   status: ${{ needs.ci.result }}
                   fields: repo,message,action,took
               env:
@@ -70,9 +71,10 @@ jobs:
             - name: Send Slack notification
               uses: 8398a7/action-slack@v3
               with:
+                  author_name: Python Server SDK
                   status: ${{ job.status }}
-                  fields: repo
-                  text: "Published to PyPi: https://pypi.org/project/notificationapi-python-server-sdk"
+                  fields: repo,job
+                  text: "PyPi Package: https://pypi.org/project/notificationapi-python-server-sdk"
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
                   SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
