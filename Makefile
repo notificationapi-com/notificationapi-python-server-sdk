@@ -62,6 +62,10 @@ coverage: ## check code coverage quickly with the default Python
 	coverage html
 	$(BROWSER) htmlcov/index.html
 
+coverage-ci: ## check code coverage quickly with the default Python
+	coverage run --source notificationapi_python_server_sdk -m pytest
+	coverage report -m --fail-under=100
+	
 docs: ## generate Sphinx HTML documentation, including API docs
 	rm -f docs/notificationapi_python_server_sdk.rst
 	rm -f docs/modules.rst
