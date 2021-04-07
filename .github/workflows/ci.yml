@@ -26,6 +26,18 @@ jobs:
 
             - name: Test & Coverage
               run: make coverage-ci
+    notify:
+        needs: ci
+        runs-on: ubuntu-latest
+        steps:
+            - name: Send Slack notification
+              uses: 8398a7/action-slack@v3
+              with:
+                  status: ${{ needs.ci.result }}
+                  fields: repo,message,action,took
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                  SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
     cd:
         needs: ci
         runs-on: ubuntu-latest
@@ -41,14 +53,20 @@ jobs:
                   python -m pip install --upgrade pip
                   pip install -r requirements_dev.txt
 
-            - name: Lint
-              run: make lint
-
-            - name: Test & Coverage
-              run: make coverage-ci
-
             - name: Release
+              id: release
               run: make release
               env:
                   TWINE_USERNAME: "__token__"
                   TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
+
+            - name: Send Slack notification
+              uses: 8398a7/action-slack@v3
+              with:
+                  status: ${{ job.status }}
+                  fields: repo
+                  text: Published to NPM ${{ steps.publish.outputs.old-version }} -> ${{ steps.publish.outputs.version }}
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                  SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+              if: always()
