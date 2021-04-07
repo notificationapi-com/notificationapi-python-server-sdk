@@ -3,7 +3,7 @@ name: Python package
 on: [push]
 
 jobs:
-    build:
+    ci:
         runs-on: ubuntu-latest
         strategy:
             matrix:
@@ -29,3 +29,29 @@ jobs:
 
             - name: Release
               run: make release
+    cd:
+        needs: ci
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v2
+            - name: Set up Python 3.9
+              uses: actions/setup-python@v2
+              with:
+                  python-version: 3.9
+
+            - name: Install dependencies
+              run: |
+                  python -m pip install --upgrade pip
+                  pip install -r requirements_dev.txt
+
+            - name: Lint
+              run: make lint
+
+            - name: Test & Coverage
+              run: make coverage-ci
+
+            - name: Release
+              run: make release
+              with:
+                  TWINE_USERNAME: "__token__"
+                  TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
