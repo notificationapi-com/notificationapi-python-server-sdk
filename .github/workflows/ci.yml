@@ -52,6 +52,6 @@ jobs:
 
             - name: Release
               run: make release
-              with:
+              env:
                   TWINE_USERNAME: "__token__"
                   TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
