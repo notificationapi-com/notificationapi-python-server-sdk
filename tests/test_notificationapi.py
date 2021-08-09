@@ -13,7 +13,13 @@ user = {
     "id": "userId",
     "email": "test+python_server_sdk@notificationapi.com",
 }
+userId = "userId"
 notification_id = "notification_id"
+api_paths = {
+    "send": f"https://api.notificationapi.com/{client_id}/sender",
+    "retract": f"https://api.notificationapi.com/{client_id}/sender/retract",
+}
+
 send_api_path = f"https://api.notificationapi.com/{client_id}/sender"
 
 
@@ -31,98 +37,76 @@ def test_init_passes_given_id_and_secret():
     notificationapi.init(client_id, client_secret)
 
 
-def test_send_makes_one_post_api_call(requests_mock):
-    requests_mock.post(send_api_path)
+@pytest.mark.parametrize(
+    "func,params",
+    [
+        ("send", {"user": user, "notificationId": notification_id}),
+        ("retract", {"userId": userId, "notificationId": notification_id}),
+    ],
+)
+def test_makes_one_post_api_call(requests_mock, func, params):
+    requests_mock.post(api_paths[func])
     notificationapi.init(client_id, client_secret)
-    notificationapi.send({"user": user, "notificationId": notification_id})
+    getattr(notificationapi, func)(params)
     assert requests_mock.call_count == 1
 
 
-def test_send_uses_basic_authorization(requests_mock):
-    requests_mock.post(send_api_path)
+@pytest.mark.parametrize(
+    "func,params",
+    [
+        ("send", {"user": user, "notificationId": notification_id}),
+        ("retract", {"userId": userId, "notificationId": notification_id}),
+    ],
+)
+def test_uses_basic_authorization(requests_mock, func, params):
+    requests_mock.post(api_paths[func])
     notificationapi.init(client_id, client_secret)
-    notificationapi.send({"user": user, "notificationId": notification_id})
+    getattr(notificationapi, func)(params)
     assert (
         requests_mock.last_request.headers["Authorization"]
         == "Basic Y2xpZW50X2lkOmNsaWVudF9zZWNyZXQ="
     )
 
 
-def test_send_includes_notification_id_and_user_in_request_body(
-    requests_mock,
-):
-    requests_mock.post(send_api_path)
+@pytest.mark.parametrize(
+    "func,params",
+    [
+        ("send", {"user": user, "notificationId": notification_id}),
+        ("retract", {"userId": userId, "notificationId": notification_id}),
+    ],
+)
+def test_passes_params_as_json_body(requests_mock, func, params):
+    requests_mock.post(api_paths[func])
     notificationapi.init(client_id, client_secret)
-    notificationapi.send({"user": user, "notificationId": notification_id})
-    assert requests_mock.last_request.json() == {
-        "notificationId": notification_id,
-        "user": user,
-    }
+    getattr(notificationapi, func)(params)
+    assert requests_mock.last_request.json() == params
 
 
-def test_send_includes_merge_tags_in_request_body(
-    requests_mock,
-):
-    requests_mock.post(send_api_path)
+@pytest.mark.parametrize(
+    "func,params",
+    [
+        ("send", {"user": user, "notificationId": notification_id}),
+        ("retract", {"userId": userId, "notificationId": notification_id}),
+    ],
+)
+def test_logs_on_202(requests_mock, caplog, func, params):
+    requests_mock.post(api_paths[func], status_code=202)
     notificationapi.init(client_id, client_secret)
-    notificationapi.send(
-        {
-            "user": user,
-            "notificationId": notification_id,
-            "mergeTags": {"x": "y"},
-        }
-    )
-    assert requests_mock.last_request.json() == {
-        "notificationId": notification_id,
-        "user": user,
-        "mergeTags": {"x": "y"},
-    }
-
-
-def test_send_includes_email_options_in_request_body(
-    requests_mock,
-):
-    requests_mock.post(send_api_path)
-    notificationapi.init(client_id, client_secret)
-    email_options = {
-        "email": {
-            "bccAddresses": ["test@test.com"],
-            "ccAddresses": ["test@test.com"],
-            "replyToAddresses": ["test@test.com"],
-        }
-    }
-    notificationapi.send(
-        {
-            "user": user,
-            "notificationId": notification_id,
-            "emailOptions": email_options,
-        }
-    )
-    assert requests_mock.last_request.json() == {
-        "notificationId": notification_id,
-        "user": user,
-        "emailOptions": email_options,
-    }
-
-
-def test_send_logs_if_it_gets_202(requests_mock, caplog):
-    requests_mock.post(send_api_path, status_code=202)
-    notificationapi.init(client_id, client_secret)
-    notificationapi.send({"user": user, "notificationId": notification_id})
+    getattr(notificationapi, func)(params)
     assert "NotificationAPI request ignored." in caplog.text
 
 
-def test_send_logs_on_202(requests_mock, caplog):
-    requests_mock.post(send_api_path, status_code=202)
+@pytest.mark.parametrize(
+    "func,params",
+    [
+        ("send", {"user": user, "notificationId": notification_id}),
+        ("retract", {"userId": userId, "notificationId": notification_id}),
+    ],
+)
+def test_logs_and_throws_on_500(requests_mock, caplog, func, params):
+    requests_mock.post(api_paths[func], status_code=500, text="big oof 500")
     notificationapi.init(client_id, client_secret)
-    notificationapi.send({"user": user, "notificationId": notification_id})
-    assert "NotificationAPI request ignored." in caplog.text
-
-
-def test_send_logs_and_throws_on_500(requests_mock, caplog):
-    requests_mock.post(send_api_path, status_code=500, text="big oof 500")
-    notificationapi.init(client_id, client_secret)
-    notificationapi.send({"user": user, "notificationId": notification_id})
+    getattr(notificationapi, func)(params)
     assert (
         "NotificationAPI request failed. Response: big oof 500" in caplog.text
     )
