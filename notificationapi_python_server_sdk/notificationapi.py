@@ -18,20 +18,29 @@ def init(client_id, client_secret):
     __client_secret = client_secret
 
 
-def send(params):
-    api_url = "https://api.notificationapi.com/" + __client_id + "/sender"
-    response = requests.post(
+def request(method, uri, data):
+    api_url = "https://api.notificationapi.com/" + __client_id + "/" + uri
+    response = requests.request(
+        method,
         api_url,
         auth=requests.auth.HTTPBasicAuth(
             username=__client_id, password=__client_secret
         ),
-        json=params,
+        json=data,
     )
     if response.status_code == 202:
-        logging.warning("NotificationAPI request ignored. params: %s", params)
+        logging.warning("NotificationAPI request ignored. params: %s", data)
     if response.status_code == 500:
         logging.error(
             "NotificationAPI request failed. Response: %s. params: %s",
             response.text,
-            params,
+            data,
         )
+
+
+def send(params):
+    request("POST", "sender", params)
+
+
+def retract(params):
+    request("POST", "sender/retract", params)
