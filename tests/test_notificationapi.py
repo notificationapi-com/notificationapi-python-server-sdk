@@ -12,6 +12,7 @@ client_secret = "client_secret"
 user = {
     "id": "userId",
     "email": "test+python_server_sdk@notificationapi.com",
+    "number": "08310000",
 }
 userId = "userId"
 notification_id = "notification_id"
