@@ -160,17 +160,6 @@ def test_passes_params_as_json_body_put(requests_mock, func, params):
     assert requests_mock.last_request.json() == {"title":params['title']}
 
 
-@pytest.mark.parametrize(
-    "func,params",
-    [
-        ("create_sub_notification",{"notification_id": notification_id,"sub_notification_id":sub_notification_id,"title":title}),
-    ],
-)
-def test_logs_on_202_put(requests_mock, caplog, func, params):
-    requests_mock.put(api_paths[func], status_code=202)
-    notificationapi.init(client_id, client_secret)
-    getattr(notificationapi, func)(params)
-    assert "NotificationAPI request ignored." in caplog.text
 
 
 @pytest.mark.parametrize(
@@ -217,19 +206,6 @@ def test_uses_basic_authorization_delete(requests_mock, func, params):
         == "Basic Y2xpZW50X2lkOmNsaWVudF9zZWNyZXQ="
     )
 
-
-
-@pytest.mark.parametrize(
-    "func,params",
-    [
-        ("delete_sub_notification",{"notification_id": notification_id,"sub_notification_id":sub_notification_id}),
-    ],
-)
-def test_logs_on_202_delete(requests_mock, caplog, func, params):
-    requests_mock.delete(api_paths[func], status_code=202)
-    notificationapi.init(client_id, client_secret)
-    getattr(notificationapi, func)(params)
-    assert "NotificationAPI request ignored." in caplog.text
 
 
 @pytest.mark.parametrize(
