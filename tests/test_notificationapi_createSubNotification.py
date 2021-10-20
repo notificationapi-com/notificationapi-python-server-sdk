@@ -23,7 +23,7 @@ api_paths = {
         ("create_sub_notification",{"notification_id": notification_id,"sub_notification_id":sub_notification_id,"title":title}),
     ],
 )
-def test_makes_one_post_api_call(requests_mock, func, params):
+def test_makes_one_put_api_call(requests_mock, func, params):
     requests_mock.put(api_paths[func])
     notificationapi.init(client_id, client_secret)
     getattr(notificationapi, func)(params)
@@ -53,7 +53,7 @@ def test_uses_basic_authorization(requests_mock, func, params):
       ("create_sub_notification",{"notification_id": notification_id,"sub_notification_id":sub_notification_id,"title":title}),
     ],
 )
-def test_passes_params_as_json_body(requests_mock, func, params):   
+def test_passes_title_as_json_body(requests_mock, func, params):   
     requests_mock.put(api_paths[func])
     notificationapi.init(client_id, client_secret)
     getattr(notificationapi, func)(params)
