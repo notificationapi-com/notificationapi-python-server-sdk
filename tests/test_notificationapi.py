@@ -16,9 +16,12 @@ user = {
 }
 userId = "userId"
 notification_id = "notification_id"
+sub_notification_id="sub_notification_id"
+title="title"
 api_paths = {
     "send": f"https://api.notificationapi.com/{client_id}/sender",
     "retract": f"https://api.notificationapi.com/{client_id}/sender/retract",
+    "create_sub_notification_id":f"https://api.notificationapi.com/{client_id}/notifications/{notification_id}/subNotifications/{sub_notification_id}"
 }
 
 send_api_path = f"https://api.notificationapi.com/{client_id}/sender"
@@ -76,7 +79,7 @@ def test_uses_basic_authorization(requests_mock, func, params):
         ("retract", {"userId": userId, "notificationId": notification_id}),
     ],
 )
-def test_passes_params_as_json_body(requests_mock, func, params):
+def test_passes_params_as_json_body(requests_mock, func, params):   
     requests_mock.post(api_paths[func])
     notificationapi.init(client_id, client_secret)
     getattr(notificationapi, func)(params)
@@ -106,6 +109,79 @@ def test_logs_on_202(requests_mock, caplog, func, params):
 )
 def test_logs_and_throws_on_500(requests_mock, caplog, func, params):
     requests_mock.post(api_paths[func], status_code=500, text="big oof 500")
+    notificationapi.init(client_id, client_secret)
+    getattr(notificationapi, func)(params)
+    assert (
+        "NotificationAPI request failed. Response: big oof 500" in caplog.text
+    )
+
+
+
+###
+@pytest.mark.parametrize(
+    "func,params",
+    [
+        ("create_sub_notification_id",{"notification_id": notification_id,"sub_notification_id":sub_notification_id,"title":title}),
+    ],
+)
+def test_makes_one_post_api_call_put(requests_mock, func, params):
+    requests_mock.put(api_paths[func])
+    notificationapi.init(client_id, client_secret)
+    getattr(notificationapi, func)(params)
+    assert requests_mock.call_count == 1
+
+
+
+@pytest.mark.parametrize(
+    "func,params",
+    [
+   ("create_sub_notification_id",{"notification_id": notification_id,"sub_notification_id":sub_notification_id,"title":title}),
+    ],
+)
+def test_uses_basic_authorization_put(requests_mock, func, params):
+    requests_mock.put(api_paths[func])
+    notificationapi.init(client_id, client_secret)
+    getattr(notificationapi, func)(params)
+    assert (
+        requests_mock.last_request.headers["Authorization"]
+        == "Basic Y2xpZW50X2lkOmNsaWVudF9zZWNyZXQ="
+    )
+
+
+@pytest.mark.parametrize(
+    "func,params",
+    [
+      ("create_sub_notification_id",{"notification_id": notification_id,"sub_notification_id":sub_notification_id,"title":title}),
+    ],
+)
+def test_passes_params_as_json_body_put(requests_mock, func, params):   
+    requests_mock.put(api_paths[func])
+    notificationapi.init(client_id, client_secret)
+    getattr(notificationapi, func)(params)
+    assert requests_mock.last_request.json() == {"title":params['title']}
+
+
+@pytest.mark.parametrize(
+    "func,params",
+    [
+        ("create_sub_notification_id",{"notification_id": notification_id,"sub_notification_id":sub_notification_id,"title":title}),
+    ],
+)
+def test_logs_on_202_put(requests_mock, caplog, func, params):
+    requests_mock.put(api_paths[func], status_code=202)
+    notificationapi.init(client_id, client_secret)
+    getattr(notificationapi, func)(params)
+    assert "NotificationAPI request ignored." in caplog.text
+
+
+@pytest.mark.parametrize(
+    "func,params",
+    [
+       ("create_sub_notification_id",{"notification_id": notification_id,"sub_notification_id":sub_notification_id,"title":title}),
+    ],
+)
+def test_logs_and_throws_on_500_put(requests_mock, caplog, func, params):
+    requests_mock.put(api_paths[func], status_code=500, text="big oof 500")
     notificationapi.init(client_id, client_secret)
     getattr(notificationapi, func)(params)
     assert (

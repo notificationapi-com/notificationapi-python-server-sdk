@@ -44,3 +44,6 @@ def send(params):
 
 def retract(params):
     request("POST", "sender/retract", params)
+
+def create_sub_notification_id(params):
+    request("PUT", "notifications/%s/subNotifications/%s"%(params['notification_id'],params['sub_notification_id']), {"title":params['title']})
