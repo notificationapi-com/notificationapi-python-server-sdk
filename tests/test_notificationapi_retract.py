@@ -17,9 +17,8 @@ user = {
 userId = "userId"
 notification_id = "notification_id"
 api_paths = {
- "retract": f"https://api.notificationapi.com/{client_id}/sender/retract",
+    "retract": f"https://api.notificationapi.com/{client_id}/sender/retract",
 }
-
 
 
 @pytest.mark.parametrize(
@@ -57,7 +56,7 @@ def test_uses_basic_authorization(requests_mock, func, params):
         ("retract", {"userId": userId, "notificationId": notification_id}),
     ],
 )
-def test_passes_params_as_json_body(requests_mock, func, params):   
+def test_passes_params_as_json_body(requests_mock, func, params):
     requests_mock.post(api_paths[func])
     notificationapi.init(client_id, client_secret)
     getattr(notificationapi, func)(params)
