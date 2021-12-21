@@ -61,3 +61,11 @@ def delete_sub_notification(params):
         "notifications/%s/subNotifications/%s"
         % (params["notification_id"], params["sub_notification_id"]),
     )
+
+
+def set_user_preferences(params):
+    request(
+        "POST",
+        "user_preferences/%s" % (params["userId"]),
+        params["userPreferences"],
+    )
