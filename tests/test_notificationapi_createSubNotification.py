@@ -10,17 +10,24 @@ from notificationapi_python_server_sdk import (
 client_id = "client_id"
 client_secret = "client_secret"
 notification_id = "notification_id"
-sub_notification_id="sub_notification_id"
-title="title"
+sub_notification_id = "sub_notification_id"
+title = "title"
 api_paths = {
-    "create_sub_notification":f"https://api.notificationapi.com/{client_id}/notifications/{notification_id}/subNotifications/{sub_notification_id}",
+    "create_sub_notification": f"https://api.notificationapi.com/{client_id}/notifications/{notification_id}/subNotifications/{sub_notification_id}",
 }
 
 
 @pytest.mark.parametrize(
     "func,params",
     [
-        ("create_sub_notification",{"notification_id": notification_id,"sub_notification_id":sub_notification_id,"title":title}),
+        (
+            "create_sub_notification",
+            {
+                "notification_id": notification_id,
+                "sub_notification_id": sub_notification_id,
+                "title": title,
+            },
+        ),
     ],
 )
 def test_makes_one_put_api_call(requests_mock, func, params):
@@ -30,11 +37,17 @@ def test_makes_one_put_api_call(requests_mock, func, params):
     assert requests_mock.call_count == 1
 
 
-
 @pytest.mark.parametrize(
     "func,params",
     [
-   ("create_sub_notification",{"notification_id": notification_id,"sub_notification_id":sub_notification_id,"title":title}),
+        (
+            "create_sub_notification",
+            {
+                "notification_id": notification_id,
+                "sub_notification_id": sub_notification_id,
+                "title": title,
+            },
+        ),
     ],
 )
 def test_uses_basic_authorization(requests_mock, func, params):
@@ -50,22 +63,34 @@ def test_uses_basic_authorization(requests_mock, func, params):
 @pytest.mark.parametrize(
     "func,params",
     [
-      ("create_sub_notification",{"notification_id": notification_id,"sub_notification_id":sub_notification_id,"title":title}),
+        (
+            "create_sub_notification",
+            {
+                "notification_id": notification_id,
+                "sub_notification_id": sub_notification_id,
+                "title": title,
+            },
+        ),
     ],
 )
-def test_passes_title_as_json_body(requests_mock, func, params):   
+def test_passes_title_as_json_body(requests_mock, func, params):
     requests_mock.put(api_paths[func])
     notificationapi.init(client_id, client_secret)
     getattr(notificationapi, func)(params)
-    assert requests_mock.last_request.json() == {"title":params['title']}
-
-
+    assert requests_mock.last_request.json() == {"title": params["title"]}
 
 
 @pytest.mark.parametrize(
     "func,params",
     [
-       ("create_sub_notification",{"notification_id": notification_id,"sub_notification_id":sub_notification_id,"title":title}),
+        (
+            "create_sub_notification",
+            {
+                "notification_id": notification_id,
+                "sub_notification_id": sub_notification_id,
+                "title": title,
+            },
+        ),
     ],
 )
 def test_logs_and_throws_on_500(requests_mock, caplog, func, params):

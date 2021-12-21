@@ -56,7 +56,7 @@ def test_uses_basic_authorization(requests_mock, func, params):
         ("send", {"user": user, "notificationId": notification_id}),
     ],
 )
-def test_passes_params_as_json_body(requests_mock, func, params):   
+def test_passes_params_as_json_body(requests_mock, func, params):
     requests_mock.post(api_paths[func])
     notificationapi.init(client_id, client_secret)
     getattr(notificationapi, func)(params)
@@ -89,4 +89,3 @@ def test_logs_and_throws_on_500(requests_mock, caplog, func, params):
     assert (
         "NotificationAPI request failed. Response: big oof 500" in caplog.text
     )
-

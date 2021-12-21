@@ -10,17 +10,22 @@ from notificationapi_python_server_sdk import (
 client_id = "client_id"
 client_secret = "client_secret"
 notification_id = "notification_id"
-sub_notification_id="sub_notification_id"
+sub_notification_id = "sub_notification_id"
 api_paths = {
-  "delete_sub_notification":f"https://api.notificationapi.com/{client_id}/notifications/{notification_id}/subNotifications/{sub_notification_id}"
+    "delete_sub_notification": f"https://api.notificationapi.com/{client_id}/notifications/{notification_id}/subNotifications/{sub_notification_id}"
 }
-
 
 
 @pytest.mark.parametrize(
     "func,params",
     [
-        ("delete_sub_notification",{"notification_id": notification_id,"sub_notification_id":sub_notification_id}),
+        (
+            "delete_sub_notification",
+            {
+                "notification_id": notification_id,
+                "sub_notification_id": sub_notification_id,
+            },
+        ),
     ],
 )
 def test_makes_one_delete_api_call(requests_mock, func, params):
@@ -30,11 +35,16 @@ def test_makes_one_delete_api_call(requests_mock, func, params):
     assert requests_mock.call_count == 1
 
 
-
 @pytest.mark.parametrize(
     "func,params",
     [
-   ("delete_sub_notification",{"notification_id": notification_id,"sub_notification_id":sub_notification_id}),
+        (
+            "delete_sub_notification",
+            {
+                "notification_id": notification_id,
+                "sub_notification_id": sub_notification_id,
+            },
+        ),
     ],
 )
 def test_uses_basic_authorization(requests_mock, func, params):
@@ -47,11 +57,16 @@ def test_uses_basic_authorization(requests_mock, func, params):
     )
 
 
-
 @pytest.mark.parametrize(
     "func,params",
     [
-       ("delete_sub_notification",{"notification_id": notification_id,"sub_notification_id":sub_notification_id}),
+        (
+            "delete_sub_notification",
+            {
+                "notification_id": notification_id,
+                "sub_notification_id": sub_notification_id,
+            },
+        ),
     ],
 )
 def test_logs_and_throws_on_500(requests_mock, caplog, func, params):

@@ -18,7 +18,7 @@ def init(client_id, client_secret):
     __client_secret = client_secret
 
 
-def request(method, uri, data= None):
+def request(method, uri, data=None):
     api_url = "https://api.notificationapi.com/" + __client_id + "/" + uri
     response = requests.request(
         method,
@@ -45,8 +45,19 @@ def send(params):
 def retract(params):
     request("POST", "sender/retract", params)
 
+
 def create_sub_notification(params):
-    request("PUT", "notifications/%s/subNotifications/%s"%(params['notification_id'],params['sub_notification_id']), {"title":params['title']})
+    request(
+        "PUT",
+        "notifications/%s/subNotifications/%s"
+        % (params["notification_id"], params["sub_notification_id"]),
+        {"title": params["title"]},
+    )
+
 
 def delete_sub_notification(params):
-    request("DELETE", "notifications/%s/subNotifications/%s"%(params['notification_id'],params['sub_notification_id']))
+    request(
+        "DELETE",
+        "notifications/%s/subNotifications/%s"
+        % (params["notification_id"], params["sub_notification_id"]),
+    )
