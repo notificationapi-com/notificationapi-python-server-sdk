@@ -33,3 +33,4 @@ make coverage
 # watch
 make test-watch
 ```
+5. bump2version major/minor/patch
