@@ -31,7 +31,7 @@ jobs:
             - name: Lint
               run: make lint
 
-            - name: python vulnerability code scann
+            - name: python vulnerability code scan
               run: make bandit
 
             - name: Test & Coverage
