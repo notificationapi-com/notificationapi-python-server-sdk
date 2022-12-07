@@ -50,6 +50,9 @@ clean-test: ## remove test and coverage artifacts
 lint: ## check style with flake8
 	flake8 notificationapi_python_server_sdk tests
 
+bandit: ## Bandit is a tool designed to find common security issues in Python code.
+	bandit notificationapi_python_server_sdk/notificationapi.py -c .bandit.yml
+	
 test: ## run tests quickly with the default Python
 	pytest
 
