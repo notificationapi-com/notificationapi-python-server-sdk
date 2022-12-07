@@ -30,6 +30,9 @@ jobs:
 
             - name: Lint
               run: make lint
+              
+            - name: bandit python security linter 
+              uses: jpetrucciani/bandit-check@master
 
             - name: Test & Coverage
               run: make coverage-ci
