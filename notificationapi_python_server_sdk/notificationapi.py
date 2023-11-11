@@ -76,6 +76,8 @@ def set_user_preferences(params):
         "user_preferences/%s" % (params["userId"]),
         params["userPreferences"],
     )
+
+
 def identify_user(params):
     user_id = params.pop('id')
 

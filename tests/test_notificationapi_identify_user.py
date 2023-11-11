@@ -12,12 +12,13 @@ from notificationapi_python_server_sdk import (
 
 client_id = "client_id"
 client_secret = "client_secret"
-user_id = "userId"  
+user_id = "userId"
 
 
 api_paths = {
     "identify_user": f"https://api.notificationapi.com/{client_id}/users/{urllib.parse.quote(user_id)}",
 }
+
 
 @pytest.mark.parametrize(
     "func,params",
@@ -25,34 +26,34 @@ api_paths = {
         (
             "identify_user",
             {
-    "id": user_id,
-    "email": "test+node_server_sdk@notificationapi.com",
-    "number": "+15005550006",
-    "pushTokens": [
-        {
-            "type": "FCM",
-            "token": "samplePushToken",
-            "device": {
-                "app_id": "sample_app_id",
-                "ad_id": "sample_ad_id",
-                "device_id": "sample_device_id",
-                "platform": "sample_platform",
-                "manufacturer": "sample_manufacturer",
-                "model": "sample_model"
-            }
-        }
-    ],
-    "webPushTokens": [
-        {
-            "sub": {
-                "endpoint": "sample_endpoint",
-                "keys": {
-                    "p256dh": "sample_p256dh",
-                    "auth": "sample_auth"
-                }
-            }
-        }
-    ]},
+                "id": user_id,
+                "email": "test+node_server_sdk@notificationapi.com",
+                "number": "+15005550006",
+                "pushTokens": [
+                    {
+                        "type": "FCM",
+                        "token": "samplePushToken",
+                        "device": {
+                            "app_id": "sample_app_id",
+                            "ad_id": "sample_ad_id",
+                            "device_id": "sample_device_id",
+                            "platform": "sample_platform",
+                            "manufacturer": "sample_manufacturer",
+                            "model": "sample_model"
+                        }
+                    }
+                ],
+                "webPushTokens": [
+                    {
+                        "sub": {
+                            "endpoint": "sample_endpoint",
+                            "keys": {
+                                "p256dh": "sample_p256dh",
+                                "auth": "sample_auth"
+                            }
+                        }
+                    }
+                ]},
         ),
     ],
 )
@@ -62,40 +63,41 @@ def test_makes_one_POST_api_call(requests_mock, func, params):
     getattr(notificationapi, func)(params)
     assert requests_mock.call_count == 1
 
+
 @pytest.mark.parametrize(
     "func,params",
     [
         (
             "identify_user",
             {
-    "id": user_id,
-    "email": "test+node_server_sdk@notificationapi.com",
-    "number": "+15005550006",
-    "pushTokens": [
-        {
-            "type": "FCM",
-            "token": "samplePushToken",
-            "device": {
-                "app_id": "sample_app_id",
-                "ad_id": "sample_ad_id",
-                "device_id": "sample_device_id",
-                "platform": "sample_platform",
-                "manufacturer": "sample_manufacturer",
-                "model": "sample_model"
-            }
-        }
-    ],
-    "webPushTokens": [
-        {
-            "sub": {
-                "endpoint": "sample_endpoint",
-                "keys": {
-                    "p256dh": "sample_p256dh",
-                    "auth": "sample_auth"
-                }
-            }
-        }
-    ]},
+                "id": user_id,
+                "email": "test+node_server_sdk@notificationapi.com",
+                "number": "+15005550006",
+                "pushTokens": [
+                    {
+                        "type": "FCM",
+                        "token": "samplePushToken",
+                        "device": {
+                            "app_id": "sample_app_id",
+                            "ad_id": "sample_ad_id",
+                            "device_id": "sample_device_id",
+                            "platform": "sample_platform",
+                            "manufacturer": "sample_manufacturer",
+                            "model": "sample_model"
+                        }
+                    }
+                ],
+                "webPushTokens": [
+                    {
+                        "sub": {
+                            "endpoint": "sample_endpoint",
+                            "keys": {
+                                "p256dh": "sample_p256dh",
+                                "auth": "sample_auth"
+                            }
+                        }
+                    }
+                ]},
         ),
     ],
 )
@@ -109,7 +111,8 @@ def test_uses_custom_authorization(requests_mock, func, params):
     notificationapi.init(client_id, client_secret)
     getattr(notificationapi, func)(params)
     assert "Authorization" in requests_mock.last_request.headers
-    assert requests_mock.last_request.headers["Authorization" ]==custom_auth
+    assert requests_mock.last_request.headers["Authorization"] == custom_auth
+
 
 @pytest.mark.parametrize(
     "func,params",
@@ -117,34 +120,34 @@ def test_uses_custom_authorization(requests_mock, func, params):
         (
             "identify_user",
             {
-    "id": user_id,
-    "email": "test+node_server_sdk@notificationapi.com",
-    "number": "+15005550006",
-    "pushTokens": [
-        {
-            "type": "FCM",
-            "token": "samplePushToken",
-            "device": {
-                "app_id": "sample_app_id",
-                "ad_id": "sample_ad_id",
-                "device_id": "sample_device_id",
-                "platform": "sample_platform",
-                "manufacturer": "sample_manufacturer",
-                "model": "sample_model"
-            }
-        }
-    ],
-    "webPushTokens": [
-        {
-            "sub": {
-                "endpoint": "sample_endpoint",
-                "keys": {
-                    "p256dh": "sample_p256dh",
-                    "auth": "sample_auth"
-                }
-            }
-        }
-    ]},
+                "id": user_id,
+                "email": "test+node_server_sdk@notificationapi.com",
+                "number": "+15005550006",
+                "pushTokens": [
+                    {
+                        "type": "FCM",
+                        "token": "samplePushToken",
+                        "device": {
+                            "app_id": "sample_app_id",
+                            "ad_id": "sample_ad_id",
+                            "device_id": "sample_device_id",
+                            "platform": "sample_platform",
+                            "manufacturer": "sample_manufacturer",
+                            "model": "sample_model"
+                        }
+                    }
+                ],
+                "webPushTokens": [
+                    {
+                        "sub": {
+                            "endpoint": "sample_endpoint",
+                            "keys": {
+                                "p256dh": "sample_p256dh",
+                                "auth": "sample_auth"
+                            }
+                        }
+                    }
+                ]},
         ),
     ],
 )
@@ -153,34 +156,35 @@ def test_passes_data_as_json_body(requests_mock, func, params):
     notificationapi.init(client_id, client_secret)
     getattr(notificationapi, func)(params)
     sent_data = requests_mock.last_request.json()
-    assert  sent_data ==        {
-    "email": "test+node_server_sdk@notificationapi.com",
-    "number": "+15005550006",
-    "pushTokens": [
-        {
-            "type": "FCM",
-            "token": "samplePushToken",
-            "device": {
-                "app_id": "sample_app_id",
-                "ad_id": "sample_ad_id",
-                "device_id": "sample_device_id",
-                "platform": "sample_platform",
-                "manufacturer": "sample_manufacturer",
-                "model": "sample_model"
-            }
-        }
-    ],
-    "webPushTokens": [
-        {
-            "sub": {
-                "endpoint": "sample_endpoint",
-                "keys": {
-                    "p256dh": "sample_p256dh",
-                    "auth": "sample_auth"
+    assert sent_data == {
+        "email": "test+node_server_sdk@notificationapi.com",
+        "number": "+15005550006",
+        "pushTokens": [
+            {
+                "type": "FCM",
+                "token": "samplePushToken",
+                "device": {
+                    "app_id": "sample_app_id",
+                    "ad_id": "sample_ad_id",
+                    "device_id": "sample_device_id",
+                    "platform": "sample_platform",
+                    "manufacturer": "sample_manufacturer",
+                    "model": "sample_model"
                 }
             }
-        }
-    ]}
+        ],
+        "webPushTokens": [
+            {
+                "sub": {
+                    "endpoint": "sample_endpoint",
+                    "keys": {
+                        "p256dh": "sample_p256dh",
+                        "auth": "sample_auth"
+                    }
+                }
+            }
+        ]}
+
 
 @pytest.mark.parametrize(
     "func,params",
@@ -188,34 +192,34 @@ def test_passes_data_as_json_body(requests_mock, func, params):
         (
             "identify_user",
             {
-    "id": user_id,
-    "email": "test+node_server_sdk@notificationapi.com",
-    "number": "+15005550006",
-    "pushTokens": [
-        {
-            "type": "FCM",
-            "token": "samplePushToken",
-            "device": {
-                "app_id": "sample_app_id",
-                "ad_id": "sample_ad_id",
-                "device_id": "sample_device_id",
-                "platform": "sample_platform",
-                "manufacturer": "sample_manufacturer",
-                "model": "sample_model"
-            }
-        }
-    ],
-    "webPushTokens": [
-        {
-            "sub": {
-                "endpoint": "sample_endpoint",
-                "keys": {
-                    "p256dh": "sample_p256dh",
-                    "auth": "sample_auth"
-                }
-            }
-        }
-    ]},
+                "id": user_id,
+                "email": "test+node_server_sdk@notificationapi.com",
+                "number": "+15005550006",
+                "pushTokens": [
+                    {
+                        "type": "FCM",
+                        "token": "samplePushToken",
+                        "device": {
+                            "app_id": "sample_app_id",
+                            "ad_id": "sample_ad_id",
+                            "device_id": "sample_device_id",
+                            "platform": "sample_platform",
+                            "manufacturer": "sample_manufacturer",
+                            "model": "sample_model"
+                        }
+                    }
+                ],
+                "webPushTokens": [
+                    {
+                        "sub": {
+                            "endpoint": "sample_endpoint",
+                            "keys": {
+                                "p256dh": "sample_p256dh",
+                                "auth": "sample_auth"
+                            }
+                        }
+                    }
+                ]},
         ),
     ],
 )
