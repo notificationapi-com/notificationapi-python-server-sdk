@@ -1,6 +1,8 @@
 import requests
 import logging
-
+import hashlib
+import base64
+import urllib.parse
 __client_id = ""
 __client_secret = ""
 
@@ -18,14 +20,19 @@ def init(client_id, client_secret):
     __client_secret = client_secret
 
 
-def request(method, uri, data=None):
+def request(method, uri, data=None, custom_auth=None):
     api_url = "https://api.notificationapi.com/" + __client_id + "/" + uri
+
+    headers = {}
+    if custom_auth:
+        headers['Authorization'] = custom_auth
+    else:
+        headers['Authorization'] = 'Basic ' + base64.b64encode(f'{__client_id}:{__client_secret}'.encode()).decode()
+
     response = requests.request(
         method,
         api_url,
-        auth=requests.auth.HTTPBasicAuth(
-            username=__client_id, password=__client_secret
-        ),
+        headers=headers,
         json=data,
     )
     if response.status_code == 202:
@@ -69,3 +76,14 @@ def set_user_preferences(params):
         "user_preferences/%s" % (params["userId"]),
         params["userPreferences"],
     )
+
+
+def identify_user(params):
+    user_id = params.pop('id')
+
+    hashed_user_id = hashlib.sha256((__client_secret + user_id).encode()).digest()
+    hashed_user_id_base64 = base64.b64encode(hashed_user_id).decode()
+
+    custom_auth = 'Basic ' + base64.b64encode(f'{__client_id}:{user_id}:{hashed_user_id_base64}'.encode()).decode()
+
+    request('POST', f'users/{urllib.parse.quote(user_id)}', params, custom_auth)
