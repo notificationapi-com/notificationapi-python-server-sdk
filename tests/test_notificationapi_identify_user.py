@@ -3,10 +3,10 @@
 """Tests for `notificationapi_python_server_sdk` package."""
 
 import pytest
-import json
 import hashlib
 import base64
 import urllib.parse
+import json
 from httpx import Response
 from notificationapi_python_server_sdk import notificationapi
 
@@ -20,6 +20,7 @@ api_paths = {
 }
 
 
+@pytest.mark.asyncio
 @pytest.mark.parametrize(
     "func,params",
     [
@@ -57,11 +58,11 @@ api_paths = {
         ),
     ],
 )
-async def test_makes_one_POST_api_call(respx_mock, func, params):
-    respx_mock.post(api_paths[func]).mock(return_value=Response(200))
+async def test_makes_one_post_api_call(respx_mock, func, params):
+    route = respx_mock.post(api_paths[func]).mock(return_value=Response(200))
     notificationapi.init(client_id, client_secret)
     await getattr(notificationapi, func)(params)
-    assert respx_mock.called
+    assert route.called
 
 
 @pytest.mark.parametrize(
