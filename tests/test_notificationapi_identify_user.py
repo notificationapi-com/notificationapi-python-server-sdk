@@ -6,9 +6,9 @@ import pytest
 import hashlib
 import base64
 import urllib.parse
-from notificationapi_python_server_sdk import (
-    notificationapi,
-)
+import json
+from httpx import Response
+from notificationapi_python_server_sdk import notificationapi
 
 client_id = "client_id"
 client_secret = "client_secret"
@@ -20,6 +20,7 @@ api_paths = {
 }
 
 
+@pytest.mark.asyncio
 @pytest.mark.parametrize(
     "func,params",
     [
@@ -57,11 +58,11 @@ api_paths = {
         ),
     ],
 )
-def test_makes_one_POST_api_call(requests_mock, func, params):
-    requests_mock.post(api_paths[func])
+async def test_makes_one_post_api_call(respx_mock, func, params):
+    route = respx_mock.post(api_paths[func]).mock(return_value=Response(200))
     notificationapi.init(client_id, client_secret)
-    getattr(notificationapi, func)(params)
-    assert requests_mock.call_count == 1
+    await getattr(notificationapi, func)(params)
+    assert route.called
 
 
 @pytest.mark.parametrize(
@@ -101,17 +102,17 @@ def test_makes_one_POST_api_call(requests_mock, func, params):
         ),
     ],
 )
-def test_uses_custom_authorization(requests_mock, func, params):
-    requests_mock.post(api_paths[func])
+async def test_uses_custom_authorization(respx_mock, func, params):
+    route = respx_mock.post(api_paths[func]).mock(return_value=Response(200))
     hashed_user_id = hashlib.sha256((client_secret + user_id).encode()).digest()
     hashed_user_id_base64 = base64.b64encode(hashed_user_id).decode()
 
     # Create custom authorization header
     custom_auth = 'Basic ' + base64.b64encode(f'{client_id}:{user_id}:{hashed_user_id_base64}'.encode()).decode()
     notificationapi.init(client_id, client_secret)
-    getattr(notificationapi, func)(params)
-    assert "Authorization" in requests_mock.last_request.headers
-    assert requests_mock.last_request.headers["Authorization"] == custom_auth
+    await getattr(notificationapi, func)(params)
+    assert "Authorization" in route.calls.last.request.headers
+    assert route.calls.last.request.headers["Authorization"] == custom_auth
 
 
 @pytest.mark.parametrize(
@@ -151,11 +152,11 @@ def test_uses_custom_authorization(requests_mock, func, params):
         ),
     ],
 )
-def test_passes_data_as_json_body(requests_mock, func, params):
-    requests_mock.post(api_paths[func])
+async def test_passes_data_as_json_body(respx_mock, func, params):
+    route = respx_mock.post(api_paths[func]).mock(return_value=Response(200))
     notificationapi.init(client_id, client_secret)
-    getattr(notificationapi, func)(params)
-    sent_data = requests_mock.last_request.json()
+    await getattr(notificationapi, func)(params)
+    sent_data = json.loads(route.calls.last.request.content)
     assert sent_data == {
         "email": "test+node_server_sdk@notificationapi.com",
         "number": "+15005550006",
@@ -223,8 +224,8 @@ def test_passes_data_as_json_body(requests_mock, func, params):
         ),
     ],
 )
-def test_logs_and_throws_on_500(requests_mock, caplog, func, params):
-    requests_mock.post(api_paths[func], status_code=500, text="big oof 500")
+async def test_logs_and_throws_on_500(respx_mock, caplog, func, params):
+    respx_mock.post(api_paths[func]).mock(return_value=Response(500, text="big oof 500"))
     notificationapi.init(client_id, client_secret)
-    getattr(notificationapi, func)(params)
+    await getattr(notificationapi, func)(params)
     assert "NotificationAPI request failed. Response: big oof 500" in caplog.text

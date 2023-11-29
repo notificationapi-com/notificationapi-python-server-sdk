@@ -1,3 +1,4 @@
+httpx==0.24.0
 pip==23.3.1
 bump2version==0.5.11
 wheel==0.33.6
@@ -10,6 +11,7 @@ twine==4.0.2
 
 pytest==7.4.3
 pytest-runner==5.1
-requests-mock==1.8.0
 pytest-watch==4.2.0
 bandit==1.7.4
+pytest-asyncio==0.21.1
+respx==0.20.2

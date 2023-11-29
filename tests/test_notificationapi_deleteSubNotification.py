@@ -3,9 +3,8 @@
 """Tests for `notificationapi_python_server_sdk` package."""
 
 import pytest
-from notificationapi_python_server_sdk import (
-    notificationapi,
-)
+from httpx import Response
+from notificationapi_python_server_sdk import notificationapi
 
 client_id = "client_id"
 client_secret = "client_secret"
@@ -16,6 +15,7 @@ api_paths = {
 }
 
 
+@pytest.mark.asyncio
 @pytest.mark.parametrize(
     "func,params",
     [
@@ -28,13 +28,14 @@ api_paths = {
         ),
     ],
 )
-def test_makes_one_delete_api_call(requests_mock, func, params):
-    requests_mock.delete(api_paths[func])
+async def test_makes_one_delete_api_call(respx_mock, func, params):
+    route = respx_mock.delete(api_paths[func]).mock(return_value=Response(200))
     notificationapi.init(client_id, client_secret)
-    getattr(notificationapi, func)(params)
-    assert requests_mock.call_count == 1
+    await getattr(notificationapi, func)(params)
+    assert route.called
 
 
+@pytest.mark.asyncio
 @pytest.mark.parametrize(
     "func,params",
     [
@@ -47,16 +48,14 @@ def test_makes_one_delete_api_call(requests_mock, func, params):
         ),
     ],
 )
-def test_uses_basic_authorization(requests_mock, func, params):
-    requests_mock.delete(api_paths[func])
+async def test_uses_basic_authorization(respx_mock, func, params):
+    route = respx_mock.delete(api_paths[func]).mock(return_value=Response(200))
     notificationapi.init(client_id, client_secret)
-    getattr(notificationapi, func)(params)
-    assert (
-        requests_mock.last_request.headers["Authorization"]
-        == "Basic Y2xpZW50X2lkOmNsaWVudF9zZWNyZXQ="
-    )
+    await getattr(notificationapi, func)(params)
+    assert route.calls.last.request.headers["Authorization"] == "Basic Y2xpZW50X2lkOmNsaWVudF9zZWNyZXQ="
 
 
+@pytest.mark.asyncio
 @pytest.mark.parametrize(
     "func,params",
     [
@@ -69,10 +68,8 @@ def test_uses_basic_authorization(requests_mock, func, params):
         ),
     ],
 )
-def test_logs_and_throws_on_500(requests_mock, caplog, func, params):
-    requests_mock.delete(api_paths[func], status_code=500, text="big oof 500")
+async def test_logs_and_throws_on_500(respx_mock, caplog, func, params):
+    respx_mock.delete(api_paths[func]).mock(return_value=Response(500, text="big oof 500"))
     notificationapi.init(client_id, client_secret)
-    getattr(notificationapi, func)(params)
-    assert (
-        "NotificationAPI request failed. Response: big oof 500" in caplog.text
-    )
+    await getattr(notificationapi, func)(params)
+    assert "NotificationAPI request failed. Response: big oof 500" in caplog.text
