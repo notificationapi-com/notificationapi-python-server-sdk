@@ -7,7 +7,10 @@ from setuptools import setup, find_packages
 with open("README.md") as readme_file:
     readme = readme_file.read()
 
-requirements = ["requests"]
+requirements = [
+    "requests",
+    "httpx>=0.24.0",
+]
 
 setup_requirements = [
     "pytest-runner",
@@ -18,8 +21,8 @@ test_requirements = [
 ]
 
 setup(
-    author="Sahand Seifi",
-    author_email="sahand.seifi@gmail.com",
+    author="Sahand Seifi, Mohammad Asadi",
+    author_email="sahand@notificationspi.com, mohammad@notificationspi.com",
     python_requires=">=3.6",
     classifiers=[
         "Development Status :: 2 - Pre-Alpha",
@@ -32,7 +35,7 @@ setup(
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
     ],
-    description=" NotificationAPI SDK for server-side (back-end) python projects. ",
+    description="NotificationAPI SDK for server-side (back-end) Python projects.",
     install_requires=requirements,
     license="MIT license",
     long_description=readme,
@@ -49,6 +52,6 @@ setup(
     test_suite="tests",
     tests_require=test_requirements,
     url="https://github.com/notificationapi-com/notificationapi_python_server_sdk",
-    version="1.0.0",
+    version="1.0.1",
     zip_safe=False,
 )
