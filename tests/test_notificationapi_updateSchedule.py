@@ -10,8 +10,8 @@ from notificationapi_python_server_sdk import notificationapi
 client_id = "client_id"
 client_secret = "client_secret"
 tracking_id = "tracking_id"
-send_request={
-    'notificationId':'notification_id'
+send_request = {
+    'notificationId': 'notification_id'
 }
 api_paths = {
     "update_schedule": f"https://api.notificationapi.com/{client_id}/schedule/{tracking_id}",
@@ -75,7 +75,7 @@ async def test_passes_send_request_as_json_body(respx_mock, func, params):
     route = respx_mock.patch(api_paths[func]).mock(return_value=Response(200))
     notificationapi.init(client_id, client_secret)
     await getattr(notificationapi, func)(params)
-    assert json.loads(route.calls.last.request.content) ==  params["send_request"]
+    assert json.loads(route.calls.last.request.content) == params["send_request"]
 
 
 @pytest.mark.asyncio
