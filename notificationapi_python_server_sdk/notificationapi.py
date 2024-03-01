@@ -71,6 +71,21 @@ async def delete_sub_notification(params):
         % (params["notification_id"], params["sub_notification_id"]),
     )
 
+async def update_schedule(params):
+    await request(
+        "PATCH",
+        "schedule/%s"
+        % (params["tracking_id"]),
+        params["send_request"],
+    )
+
+
+async def delete_schedule(params):
+    await request(
+        "DELETE",
+        "schedule/%s"
+        % (params["tracking_id"]),
+    )
 
 async def set_user_preferences(params):
     await request(
