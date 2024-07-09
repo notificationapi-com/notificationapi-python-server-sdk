@@ -27,6 +27,7 @@ query_logs_params = {
     "envIdFilter": ["6ok6imq9unr2budgiebjdaa6oi"]
 }
 
+
 @pytest.mark.asyncio
 @pytest.mark.parametrize(
     "func,params",
@@ -39,6 +40,7 @@ async def test_makes_one_post_api_call(respx_mock, func, params):
     notificationapi.init(client_id, client_secret)
     await getattr(notificationapi, func)(params)
     assert route.called
+
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize(
@@ -53,6 +55,7 @@ async def test_passes_params_as_json_body(respx_mock, func, params):
     await getattr(notificationapi, func)(params)
     assert json.loads(route.calls.last.request.content) == params
 
+
 @pytest.mark.asyncio
 @pytest.mark.parametrize(
     "func,params",
@@ -65,6 +68,7 @@ async def test_logs_on_202(respx_mock, caplog, func, params):
     notificationapi.init(client_id, client_secret)
     await getattr(notificationapi, func)(params)
     assert "NotificationAPI request ignored." in caplog.text
+
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize(
