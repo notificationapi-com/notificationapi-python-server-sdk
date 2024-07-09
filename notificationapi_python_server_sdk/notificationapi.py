@@ -106,3 +106,8 @@ async def identify_user(params):
     custom_auth = 'Basic ' + base64.b64encode(f'{__client_id}:{user_id}:{hashed_user_id_base64}'.encode()).decode()
 
     await request('POST', f'users/{urllib.parse.quote(user_id)}', params, custom_auth)
+
+
+async def query_logs(params):
+    response = await request("POST", "logs/query", params)
+    return response
