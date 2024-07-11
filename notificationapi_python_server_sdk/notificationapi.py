@@ -112,10 +112,11 @@ async def query_logs(params):
     response = await request("POST", "logs/query", params)
     return response
 
+
 async def update_in_app_notification(user_id, params):
-    
+
     hashed_user_id = hashlib.sha256((__client_secret + user_id).encode()).digest()
     hashed_user_id_base64 = base64.b64encode(hashed_user_id).decode()
     custom_auth = 'Basic ' + base64.b64encode(f'{__client_id}:{user_id}:{hashed_user_id_base64}'.encode()).decode()
-    
+
     return await request('PATCH', f'users/{user_id}/notifications/INAPP_WEB', params, custom_auth)
