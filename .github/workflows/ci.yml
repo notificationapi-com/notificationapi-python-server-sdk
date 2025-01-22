@@ -71,14 +71,27 @@ jobs:
                   TWINE_USERNAME: "__token__"
                   TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
 
-            - name: Send Slack notification
+            - name: Send Slack notification for success
+              if: success()
               uses: 8398a7/action-slack@v3
               with:
-                  author_name: Python Server SDK
-                  status: ${{ job.status }}
-                  fields: repo,job
-                  text: "PyPi Package: https://pypi.org/project/notificationapi-python-server-sdk"
+                author_name: Python Server SDK
+                status: ${{ job.status }}
+                fields: repo,message,commit,action,workflow,took
+                text: "PyPi Package: https://pypi.org/project/notificationapi-python-server-sdk"
               env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-                  SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-              if: always()
+                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                SLACK_WEBHOOK_URL: ${{ secrets.SLACK_SUCCESS_WEBHOOK_URL }}
+      
+            - name: Send Slack notification for failure or cancellation
+              if: failure() || cancelled()
+              uses: 8398a7/action-slack@v3
+              with:
+                author_name: Python Server SDK
+                status: ${{ job.status }}
+                fields: repo,message,commit,action,workflow,took
+                text: "PyPi Package: https://pypi.org/project/notificationapi-python-server-sdk"
+              env:
+                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                SLACK_WEBHOOK_URL: ${{ secrets.SLACK_FAILED_WEBHOOK_URL }}
+      
