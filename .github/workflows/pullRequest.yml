@@ -11,15 +11,16 @@ on:
 
 jobs:
     ci:
+        # Using 22.04 to be compatiable with Python 3.7 until it is deprecated
         runs-on: ubuntu-22.04
         strategy:
             matrix:
                 python-version: [ 3.7, 3.8, 3.9]
 
         steps:
-            - uses: actions/checkout@v2
+            - uses: actions/checkout@v4
             - name: Set up Python ${{ matrix.python-version }}
-              uses: actions/setup-python@v2
+              uses: actions/setup-python@v4
               with:
                   python-version: ${{ matrix.python-version }}
 
