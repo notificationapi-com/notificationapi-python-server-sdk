@@ -8,6 +8,7 @@ tox==4.8.0
 coverage==4.5.4
 Sphinx==1.8.5
 twine==4.0.2
+importlib_metadata==7.2.1  # Pin specific version for twine compatibility https://github.com/astral-sh/rye/issues/1180
 
 pytest==7.4.3
 pytest-runner==5.1
