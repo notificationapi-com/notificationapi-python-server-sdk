@@ -11,15 +11,16 @@ on:
 
 jobs:
     ci:
-        runs-on: ubuntu-latest
+        # Using 22.04 to be compatiable with Python 3.7 until it is deprecated
+        runs-on: ubuntu-22.04 
         strategy:
             matrix:
                 python-version: [ 3.7, 3.8, 3.9]
 
         steps:
-            - uses: actions/checkout@v2
+            - uses: actions/checkout@v4
             - name: Set up Python ${{ matrix.python-version }}
-              uses: actions/setup-python@v2
+              uses: actions/setup-python@v4
               with:
                   python-version: ${{ matrix.python-version }}
 
@@ -53,9 +54,9 @@ jobs:
         needs: ci
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v2
+            - uses: actions/checkout@v4
             - name: Set up Python 3.9
-              uses: actions/setup-python@v2
+              uses: actions/setup-python@v4
               with:
                   python-version: 3.9
 
@@ -71,14 +72,27 @@ jobs:
                   TWINE_USERNAME: "__token__"
                   TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
 
-            - name: Send Slack notification
+            - name: Send Slack notification for success
+              if: success()
               uses: 8398a7/action-slack@v3
               with:
-                  author_name: Python Server SDK
-                  status: ${{ job.status }}
-                  fields: repo,job
-                  text: "PyPi Package: https://pypi.org/project/notificationapi-python-server-sdk"
+                author_name: Python Server SDK
+                status: ${{ job.status }}
+                fields: repo,message,commit,action,workflow,took
+                text: "PyPi Package: https://pypi.org/project/notificationapi-python-server-sdk"
               env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-                  SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-              if: always()
+                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                SLACK_WEBHOOK_URL: ${{ secrets.SLACK_SUCCESS_WEBHOOK_URL }}
+      
+            - name: Send Slack notification for failure or cancellation
+              if: failure() || cancelled()
+              uses: 8398a7/action-slack@v3
+              with:
+                author_name: Python Server SDK
+                status: ${{ job.status }}
+                fields: repo,message,commit,action,workflow,took
+                text: "PyPi Package: https://pypi.org/project/notificationapi-python-server-sdk"
+              env:
+                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                SLACK_WEBHOOK_URL: ${{ secrets.SLACK_FAILED_WEBHOOK_URL }}
+      
