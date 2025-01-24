@@ -41,15 +41,28 @@ jobs:
         needs: ci
         runs-on: ubuntu-latest
         steps:
-            - name: Send Slack notification
+            - name: Send Slack notification on success
+              if: success()
               uses: 8398a7/action-slack@v3
               with:
                   author_name: Python Server SDK
                   status: ${{ needs.ci.result }}
-                  fields: repo,message,action,took
+                  fields: repo,message,commit,action,workflow,took
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-                  SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+                  SLACK_WEBHOOK_URL: ${{ secrets.SLACK_SUCCESS_WEBHOOK_URL }}
+
+            - name: Send Slack notification on failure
+              if: failure() || cancelled()
+              uses: 8398a7/action-slack@v3
+              with:
+                  author_name: Python Server SDK
+                  status: ${{ needs.ci.result }}
+                  fields: repo,message,commit,action,workflow,took
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                  SLACK_WEBHOOK_URL: ${{ secrets.SLACK_FAILED_WEBHOOK_URL }}
+
     cd:
         needs: ci
         runs-on: ubuntu-latest
