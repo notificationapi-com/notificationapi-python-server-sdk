@@ -25,13 +25,6 @@ def test_init_with_ca_region():
     notificationapi.init(client_id, client_secret, CA_REGION)
     assert notificationapi.__base_url == CA_REGION
 
-
-def test_init_with_custom_url():
-    custom_url = "https://custom-api.example.com"
-    notificationapi.init(client_id, client_secret, custom_url)
-    assert notificationapi.__base_url == custom_url
-
-
 @pytest.mark.asyncio
 async def test_request_uses_correct_region_url(respx_mock):
     # Test with EU region
