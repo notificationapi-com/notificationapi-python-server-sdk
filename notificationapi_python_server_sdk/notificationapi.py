@@ -3,12 +3,14 @@ import logging
 import hashlib
 import base64
 import urllib.parse
+from . import US_REGION
 
 __client_id = ""
 __client_secret = ""
+__base_url = US_REGION
 
 
-def init(client_id, client_secret):
+def init(client_id, client_secret, base_url=None):
     if not client_id:
         raise Exception("Bad client_id")
 
@@ -19,10 +21,15 @@ def init(client_id, client_secret):
     __client_id = client_id
     global __client_secret
     __client_secret = client_secret
-
+    
+    global __base_url
+    if base_url:
+        __base_url = base_url
+    else:
+        __base_url = US_REGION
 
 async def request(method, uri, data=None, custom_auth=None, queryStrings=None):
-    api_url = "https://api.notificationapi.com/" + __client_id + "/" + uri
+    api_url = f"{__base_url}/{__client_id}/{uri}"
 
     headers = {}
     if custom_auth:
@@ -46,6 +53,8 @@ async def request(method, uri, data=None, custom_auth=None, queryStrings=None):
             response.text,
             data,
         )
+    
+    return response
 
 
 async def send(params):
