@@ -21,12 +21,12 @@ def init(client_id, client_secret, base_url=None):
     __client_id = client_id
     global __client_secret
     __client_secret = client_secret
-    
     global __base_url
     if base_url:
         __base_url = base_url
     else:
         __base_url = US_REGION
+
 
 async def request(method, uri, data=None, custom_auth=None, queryStrings=None):
     api_url = f"{__base_url}/{__client_id}/{uri}"
@@ -53,7 +53,6 @@ async def request(method, uri, data=None, custom_auth=None, queryStrings=None):
             response.text,
             data,
         )
-    
     return response
 
 

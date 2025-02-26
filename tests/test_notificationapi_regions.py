@@ -25,14 +25,15 @@ def test_init_with_ca_region():
     notificationapi.init(client_id, client_secret, CA_REGION)
     assert notificationapi.__base_url == CA_REGION
 
+
 @pytest.mark.asyncio
 async def test_request_uses_correct_region_url(respx_mock):
     # Test with EU region
     eu_api_url = f"{EU_REGION}/{client_id}/sender"
     route = respx_mock.post(eu_api_url).mock(return_value=httpx.Response(200))
-    
+
     notificationapi.init(client_id, client_secret, EU_REGION)
     await notificationapi.send({"notificationId": "test", "user": {"id": "user1"}})
-    
+
     assert route.called
     assert route.calls.last.request.url == eu_api_url
