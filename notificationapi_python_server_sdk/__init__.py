@@ -2,7 +2,7 @@
 
 __author__ = """Sahand Seifi"""
 __email__ = "sahand.seifi@gmail.com"
-__version__ = "1.2.0"
+__version__ = "1.3.0"
 
 # Region constants
 US_REGION = "https://api.notificationapi.com"
