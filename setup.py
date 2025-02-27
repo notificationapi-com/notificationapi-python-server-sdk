@@ -52,6 +52,6 @@ setup(
     test_suite="tests",
     tests_require=test_requirements,
     url="https://github.com/notificationapi-com/notificationapi_python_server_sdk",
-    version="1.2.0",
+    version="2.0.0",
     zip_safe=False,
 )

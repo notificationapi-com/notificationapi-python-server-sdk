@@ -5,7 +5,7 @@
 import pytest
 import json
 from httpx import Response
-from notificationapi_python_server_sdk import notificationapi
+from notificationapi_python_server_sdk import notificationapi, US_REGION
 
 client_id = "client_id"
 client_secret = "client_secret"
@@ -17,7 +17,7 @@ user = {
 userId = "userId"
 notification_id = "notification_id"
 api_paths = {
-    "send": f"https://api.notificationapi.com/{client_id}/sender",
+    "send": f"{US_REGION}/{client_id}/sender",
 }
 
 
