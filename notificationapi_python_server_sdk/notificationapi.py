@@ -33,9 +33,14 @@ async def request(method, uri, data=None, custom_auth=None, queryStrings=None):
 
     headers = {}
     if custom_auth:
-        headers['Authorization'] = custom_auth
+        headers["Authorization"] = custom_auth
     else:
-        headers['Authorization'] = 'Basic ' + base64.b64encode(f'{__client_id}:{__client_secret}'.encode()).decode()
+        headers["Authorization"] = (
+            "Basic "
+            + base64.b64encode(
+                f"{__client_id}:{__client_secret}".encode()
+            ).decode()
+        )
 
     async with httpx.AsyncClient() as client:
         response = await client.request(
@@ -57,15 +62,15 @@ async def request(method, uri, data=None, custom_auth=None, queryStrings=None):
 
 
 async def send(params):
-    await request("POST", "sender", params)
+    return await request("POST", "sender", params)
 
 
 async def retract(params):
-    await request("POST", "sender/retract", params)
+    return await request("POST", "sender/retract", params)
 
 
 async def create_sub_notification(params):
-    await request(
+    return await request(
         "PUT",
         "notifications/%s/subNotifications/%s"
         % (params["notification_id"], params["sub_notification_id"]),
@@ -74,7 +79,7 @@ async def create_sub_notification(params):
 
 
 async def delete_sub_notification(params):
-    await request(
+    return await request(
         "DELETE",
         "notifications/%s/subNotifications/%s"
         % (params["notification_id"], params["sub_notification_id"]),
@@ -82,24 +87,22 @@ async def delete_sub_notification(params):
 
 
 async def update_schedule(params):
-    await request(
+    return await request(
         "PATCH",
-        "schedule/%s"
-        % (params["tracking_id"]),
+        "schedule/%s" % (params["tracking_id"]),
         params["send_request"],
     )
 
 
 async def delete_schedule(params):
-    await request(
+    return await request(
         "DELETE",
-        "schedule/%s"
-        % (params["tracking_id"]),
+        "schedule/%s" % (params["tracking_id"]),
     )
 
 
 async def set_user_preferences(params):
-    await request(
+    return await request(
         "POST",
         "user_preferences/%s" % (params["userId"]),
         params["userPreferences"],
@@ -107,25 +110,43 @@ async def set_user_preferences(params):
 
 
 async def delete_user_preferences(params):
-    user_id = params.pop('id')
+    user_id = params.pop("id")
 
-    hashed_user_id = hashlib.sha256((__client_secret + user_id).encode()).digest()
+    hashed_user_id = hashlib.sha256(
+        (__client_secret + user_id).encode()
+    ).digest()
     hashed_user_id_base64 = base64.b64encode(hashed_user_id).decode()
 
-    custom_auth = 'Basic ' + base64.b64encode(f'{__client_id}:{user_id}:{hashed_user_id_base64}'.encode()).decode()
+    custom_auth = (
+        "Basic "
+        + base64.b64encode(
+            f"{__client_id}:{user_id}:{hashed_user_id_base64}".encode()
+        ).decode()
+    )
 
-    await request('DELETE', f'users/{user_id}/preferences', None, custom_auth, params)
+    return await request(
+        "DELETE", f"users/{user_id}/preferences", None, custom_auth, params
+    )
 
 
 async def identify_user(params):
-    user_id = params.pop('id')
+    user_id = params.pop("id")
 
-    hashed_user_id = hashlib.sha256((__client_secret + user_id).encode()).digest()
+    hashed_user_id = hashlib.sha256(
+        (__client_secret + user_id).encode()
+    ).digest()
     hashed_user_id_base64 = base64.b64encode(hashed_user_id).decode()
 
-    custom_auth = 'Basic ' + base64.b64encode(f'{__client_id}:{user_id}:{hashed_user_id_base64}'.encode()).decode()
+    custom_auth = (
+        "Basic "
+        + base64.b64encode(
+            f"{__client_id}:{user_id}:{hashed_user_id_base64}".encode()
+        ).decode()
+    )
 
-    await request('POST', f'users/{urllib.parse.quote(user_id)}', params, custom_auth)
+    return await request(
+        "POST", f"users/{urllib.parse.quote(user_id)}", params, custom_auth
+    )
 
 
 async def query_logs(params):
@@ -134,8 +155,17 @@ async def query_logs(params):
 
 
 async def update_in_app_notification(user_id, params):
-    hashed_user_id = hashlib.sha256((__client_secret + user_id).encode()).digest()
+    hashed_user_id = hashlib.sha256(
+        (__client_secret + user_id).encode()
+    ).digest()
     hashed_user_id_base64 = base64.b64encode(hashed_user_id).decode()
-    custom_auth = 'Basic ' + base64.b64encode(f'{__client_id}:{user_id}:{hashed_user_id_base64}'.encode()).decode()
+    custom_auth = (
+        "Basic "
+        + base64.b64encode(
+            f"{__client_id}:{user_id}:{hashed_user_id_base64}".encode()
+        ).decode()
+    )
 
-    return await request('PATCH', f'users/{user_id}/notifications/INAPP_WEB', params, custom_auth)
+    return await request(
+        "PATCH", f"users/{user_id}/notifications/INAPP_WEB", params, custom_auth
+    )
